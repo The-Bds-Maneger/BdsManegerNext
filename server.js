@@ -9,9 +9,11 @@ const nextHandler = nextApp.getRequestHandler();
 
 let port = 3000;
 io.on("connect", socket => {
-  socket.emit("now", {
-    message: "Hello",
-  });
+  setInterval(() => {
+    socket.emit("now", {
+      message: Date.now(),
+    });
+  }, 1000);
 });
 
 // Prepare Next App
