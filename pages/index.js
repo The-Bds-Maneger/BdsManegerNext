@@ -1,6 +1,10 @@
 import Head from "next/head";
+import Style from "../styles/Home.module.css"
 import { Component } from "react";
 import io from "socket.io-client";
+
+import Navbar from "./nav";
+import NavBarStyle from "../styles/nav.module.css";
 
 class Home extends Component {
   constructor(props) {
@@ -9,19 +13,25 @@ class Home extends Component {
   }
   componentDidMount() {
     this.socket = io();
-    this.socket.on("now", data => {
-      this.state.hello += data.message + "\n"
-      this.setState(this.state)
+    this.socket.on("Log", data => {
+      [...data.log].forEach(log => {
+        const Element = document.createElement("p");
+        Element.innerHTML = log;
+        document.getElementById("liveLog").appendChild(Element);
+      });
     });
   }
 
   render() {
     return (
       <div>
-        <Head>
-          <link rel="stylesheet" href="/style.css" />
-        </Head>
-        <textarea value={this.state.hello}></textarea>
+        <Navbar />
+        <div className={NavBarStyle.root}>
+          <Head>
+            <title>Home</title>
+          </Head>
+          <div id="liveLog" className={Style.logDiv}></div>
+        </div>
       </div>
     )
   }

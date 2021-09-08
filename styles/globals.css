@@ -1,16 +1,60 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+@font-face {
+  font-family: minecraft-medium;
+  src: url(https://raw.githubusercontent.com/The-Bds-Maneger/Bds-Maneger-html-assets/main/font/Minecraft.ttf);
+}
+@font-face {
+  font-family: minecraft-bold;
+  src: url(https://raw.githubusercontent.com/The-Bds-Maneger/Bds-Maneger-html-assets/main/font/Mojang-Bold.ttf);
+}
+@font-face {
+  font-family: minecraft-regular;
+  src: url(https://raw.githubusercontent.com/The-Bds-Maneger/Bds-Maneger-html-assets/main/font/Mojang-Regular.ttf);
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+:root {
+  --text-primary: #fff;
+  --text-secondary: #fff;
+  --bg-primary: #1d1d1d;
+  --bg-secondary: #3e3e3e;
+  --box-primary: rgba(0,0,0,0.4);
+  --border-color: rgba(0,0,0,0.5);
+  --color-error: rgb(164, 29, 29);
+  --color-success: rgb(17, 173, 14);
 }
 
 * {
-  box-sizing: border-box;
+  font-family: "minecraft-medium", "minecraft-bold", "minecraft-regular";
+  color: var(--text-primary);
+  font-size: large;
+}
+
+* { 
+  font-family: "minecraft-medium", "minecraft-bold", "minecraft-regular";
+  color: var(--text-primary);
+}
+
+input, select, button {
+  background-color: var(--bg-secondary);
+  border: none;
+  border-radius: 5px;
+}
+
+a {
+  color: var(--text-secondary);
+}
+
+html, body {
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
+}
+
+::-webkit-scrollbar {
+  width: 0.45rem;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-primary);
 }

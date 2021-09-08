@@ -3,12 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "start": "node server.js",
     "lint": "next lint"
   },
   "dependencies": {
+    "@the-bds-maneger/core": "^1.13.7",
     "express": "^4.17.1",
     "next": "11.1.2",
     "react": "17.0.2",
