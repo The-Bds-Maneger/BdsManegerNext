@@ -1,9 +1,6 @@
 import { Component } from "react";
 import io from "socket.io-client";
 
-import NavBar from "../nav";
-import NavBarStyle from "../../styles/nav.module.css";
-
 class ServerSettings extends Component {
   constructor(props) {
     super(props);
@@ -43,8 +40,6 @@ class ServerSettings extends Component {
   render() {
     return (
       <div>
-      <NavBar />
-      <div className={NavBarStyle.root}>
         {/* World Name */}
         <span>World Name: <input type="text" placeholder="World Name" value={this.state.world} onChange={(e) => this.setState({world: e.target.value})} /></span>
         {/* World Description */}
@@ -108,7 +103,6 @@ class ServerSettings extends Component {
           });
         }}>Save</button>
       </div>
-    </div>
     )
   }
 }

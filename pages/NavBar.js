@@ -1,4 +1,3 @@
-import "../styles/nav.module.css";
 import { Component } from "react";
 import io from "socket.io-client";
 
@@ -70,7 +69,7 @@ class SettingsButtom extends Component {
   render() {
     return (
       <li className="nav-item">
-        <a href="/settings" className="nav-link">
+        <a href={"/settings"} className="nav-link">
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="2%" viewBox="0 0 24 24">
             <g>
               <path d="M0,0h24v24H0V0z" fill="none"/>

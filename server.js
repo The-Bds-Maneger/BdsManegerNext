@@ -18,13 +18,29 @@ const nextHandler = nextApp.getRequestHandler();
 
 let port = 3000;
 io.on("connect", socket => {
+  // Current Log
   let CurrentLog = fs.readFileSync(path.join(Bds_Backend.getBdsConfig().paths.log, "latest.log"), "utf8");
   if (fs.existsSync(path.join(Bds_Backend.getBdsConfig().paths.log, "latest.log")) && Bds_Backend.detect()) {
     socket.emit("Log", {
       log: CurrentLog.split(/\n|\r/gi),
     });
   }
+
+  // Send Players JSON
+  let Players = JSON.parse(fs.readFileSync(Bds_Backend.getBdsConfig().paths.player, "utf8"));
+  socket.emit("PlayerList", Players[Bds_Backend.BdsSettigs.GetPlatform()]);
+
+  // Send Server Config
   socket.emit("LoadConfig", Bds_Backend.get_config());
+  
+  // Save Server Config
+  socket.on("SaveConfig", data => {
+    console.log(data);
+    Bds_Backend.set_config(data);
+    socket.emit("LoadConfig", Bds_Backend.get_config());
+  });
+
+  // Backend Control
   socket.on("control", data => {
     console.log(data);
     if (data.type === "start") {
@@ -32,12 +48,6 @@ io.on("connect", socket => {
     } else if (data.type === "stop") {
       StopServer();
     }
-  });
-  
-  socket.on("SaveConfig", data => {
-    console.log(data);
-    Bds_Backend.set_config(data);
-    socket.emit("LoadConfig", Bds_Backend.get_config());
   });
 });
 

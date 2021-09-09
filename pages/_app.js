@@ -1,5 +1,11 @@
-import "../styles/globals.css";
 import Head from "next/head";
+
+// CSS
+import "../styles/NavBar.css";
+import "../styles/globals.css";
+
+// Navbar
+import Navbar from "./NavBar";
 
 function BdsManeger({ Component, pageProps }) {
   return (
@@ -7,9 +13,14 @@ function BdsManeger({ Component, pageProps }) {
       <Head>
         <link rel="icon" href="https://raw.githubusercontent.com/The-Bds-Maneger/Bds-Maneger-html-assets/main/images/mcpe.ico" />
       </Head>
-      <Component {...pageProps} />
+      <Navbar />
+      <div>
+        <div className="root">
+          <Component {...pageProps} />
+        </div>
+      </div> 
     </>
   )
 }
 
-export default BdsManeger
+export default BdsManeger;

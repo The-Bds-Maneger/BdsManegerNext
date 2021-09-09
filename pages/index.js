@@ -1,10 +1,9 @@
 import Head from "next/head";
-import Style from "../styles/Home.module.css"
 import { Component } from "react";
 import io from "socket.io-client";
 
-import Navbar from "./nav";
-import NavBarStyle from "../styles/nav.module.css";
+// CSS
+import Style from "../styles/Home.module.css"
 
 class Home extends Component {
   constructor(props) {
@@ -25,13 +24,10 @@ class Home extends Component {
   render() {
     return (
       <div>
-        <Navbar />
-        <div className={NavBarStyle.root}>
-          <Head>
-            <title>Home</title>
-          </Head>
-          <div id="liveLog" className={Style.logDiv}></div>
-        </div>
+        <Head>
+          <title>Home</title>
+        </Head>
+        <div id="liveLog" className={Style.logDiv}></div>
       </div>
     )
   }
