@@ -100,6 +100,9 @@ class ServerSettings extends Component {
             port: this.state.port,
             portv6: this.state.portv6,
             seed: this.state.seed
+          }, function (err){
+            if(err) alert(err);
+            alert("Saved!");
           });
         }}>Save</button>
       </div>

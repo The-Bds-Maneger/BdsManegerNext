@@ -7,7 +7,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@the-bds-maneger/core": "^1.13.7",
+    "@the-bds-maneger/core": "^12.847.729",
     "express": "^4.17.1",
     "next": "11.1.2",
     "react": "17.0.2",

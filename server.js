@@ -34,21 +34,38 @@ io.on("connect", socket => {
   socket.emit("LoadConfig", Bds_Backend.get_config());
   
   // Save Server Config
-  socket.on("SaveConfig", data => {
-    console.log(data);
-    Bds_Backend.set_config(data);
-    socket.emit("LoadConfig", Bds_Backend.get_config());
-  });
-
-  // Backend Control
-  socket.on("control", data => {
-    console.log(data);
-    if (data.type === "start") {
-      StartServer();
-    } else if (data.type === "stop") {
-      StopServer();
+  socket.on("SaveConfig", (data, callback = () => {}) => {
+    try {
+      console.log(data);
+      Bds_Backend.set_config(data);
+      callback(undefined);
+      socket.emit("LoadConfig", Bds_Backend.get_config());
+    } catch (error) {
+      console.error(error);
+      callback(error);
     }
   });
+
+  // Command
+  socket.on("Command", (data = "", callback = () => {}) => {
+    if (global.globalRunID) {
+      global.BdsExecs[global.globalRunID].command(data, () => {
+        callback(true);
+      });
+    } else callback(false);
+  });
+});
+
+// Backend Control
+app.post("/BdsBackend/control", (req, res) => {
+  console.log(req.headers);
+  const { typeaction } = req.headers;
+  if (typeaction === "start") {
+    StartServer();
+  } else if (typeaction === "stop") {
+    StopServer();
+  }
+  res.send("OK");
 });
 
 // Bds Core Backend
@@ -77,8 +94,28 @@ function StopServer() {
   }
 }
 
+// Load Root API Token
+const rootToken = [...JSON.parse(fs.readFileSync(path.join(Bds_Backend.BdsSettigs.bds_dir, "bds_tokens.json"), "utf8"))];
+if (rootToken.length > 0) process.env.API_TOKEN = rootToken[0].token;
+else {
+  process.env.API_TOKEN = Bds_Backend.token_register();
+}
+
+fs.readFile("./.env.json", "utf8", (err, data) => {
+  if (err) {
+    fs.writeFileSync("./.env.json", JSON.stringify({
+      API_TOKEN: process.env.API_TOKEN,
+    }, null, 2));
+  } else {
+    data = JSON.parse(data);
+    data.API_TOKEN ? console.log(data.API_TOKEN) : process.env.API_TOKEN = Bds_Backend.token_register();
+    fs.writeFileSync("./.env.json", JSON.stringify(data));
+  }
+});
+
 // Prepare Next App
 nextApp.prepare().then(() => {
+  app.use("/BdsAPI", require("@the-bds-maneger/core/src/api/api").BdsRoutes);
   app.get("*", (req, res) => {
     return nextHandler(req, res);
   });

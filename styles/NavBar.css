@@ -10,7 +10,7 @@
 .navbar {
   position: fixed;
   background-color: var(--bg-primary);
-  /* transition: width 600ms ease; */
+  transition: width 600ms ease;
   overflow: scroll;
 }
 
@@ -97,8 +97,8 @@
   .navbar {
       bottom: 0;
       width: 100vw;
-      height: 5rem;
-      display: contents;
+      height: 6rem;
+      /* display: contents; */
   }
   .logo {
       display: none;
@@ -121,10 +121,6 @@
       top: 0;
       width: 5rem;
       height: 100vh;
-  }
-  .modal{        
-      background-color: var(--bg-primary); /* Fallback color */
-      background-color: var(--box-primary); /* Black w/ opacity */
   }
   .navbar {
       width: 16rem;

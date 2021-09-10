@@ -13,20 +13,26 @@ function getQuery(){
 
 class PlayerList extends React.Component {
   render() {
+      const ParseDateToInput = (dateRecive = new Date()) => {
+        const date = new Date(dateRecive);
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        const hour = date.getHours();
+        const min = date.getMinutes();
+        const sec = date.getSeconds();
+        return `${year}/${month}/${day} ${hour}:${min}:${sec}`;
+      }
       return (
-          <p className="sidebar__category container-fluid">
-            {
-            this.props.Player
-            .map((Data, key) => (
+        <div>
+          {
+            this.props.Player.map((Data, key) => (
               <div key={key} className="PlayerList">
-                <span>Player: {Data.Player}</span>
-                <p>
-                  <span>Date: <input type="date" disabled value={new Date(Data.value)} /></span>
-                </p>
+                <a href={`player/log/${Data.Player}`}>Player: {Data.Player}</a>
               </div>
             ))
           }
-        </p>
+        </div>
       );
   }
 }
@@ -40,6 +46,7 @@ class Player extends Component {
     }
     this.PlayerArray = [];
   }
+
   componentDidMount() {
     this.socket = io();
     const Querys = getQuery();
@@ -59,7 +66,7 @@ class Player extends Component {
         <Head>
           <title>{this.state.player.length >= 1 ?  `Player: ${this.state.player.length}` : "No Players"} || Server: {this.state.Server !== "" ?  this.state.Server : "The Bds Maneger"}</title>
         </Head>
-        <div id="PlayerList" className={PlayerCSS["PlayerList"]}>
+        <div id="PlayerList">
           {
             this.state.player.length >= 1 ? <PlayerList Player={this.state.player}/> : <p className={PlayerCSS["CenterNoPLayer"]}>No Players</p>
           }

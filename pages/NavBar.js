@@ -1,28 +1,38 @@
 import { Component } from "react";
 import io from "socket.io-client";
 
+// Import ENV
+import Env from "../.env.json"
+
 // Start buttom
 class StartButtom extends Component {
   constructor (props) {
     super(props);
-    this.state = {}
+    this.state = {};
+    this.BackendControl = (type = "start") => {
+      fetch("/BdsBackend/control", {
+        method: "POST",
+        headers: {
+          typeaction: type
+        }
+      }).then(res => {
+        // alert(JSON.stringify(res));
+      }).catch(err => {
+        // alert(err);
+      });
+    }
   }
   componentDidMount() {
     this.socket = io();
-    this.BackendControl = (type = "start") => {
-      this.socket.emit("control", {
-          type: type
-      });
-    }
   }
   render() {
     return (
       <li className="nav-item" href="#Start" id="start">
-        <a href="#" className="nav-link">
+        <a href="#" className="nav-link" onClick={() => this.BackendControl("start")}>
           <svg width="1%" viewBox="0 0 16 16" className="bi bi-play" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path d="M10.804 8L5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z"/>
           </svg>
-          <span className="link-text" onClick={() => this.BackendControl("start")}>Start</span>
+          <span className="link-text">Start</span>
         </a>
       </li>
     )
@@ -33,24 +43,31 @@ class StartButtom extends Component {
 class StopButtom extends Component {
   constructor (props) {
     super(props);
-    this.state = {}
+    this.state = {};
+    this.BackendControl = (type = "start") => {
+      fetch("/BdsBackend/control", {
+        method: "POST",
+        headers: {
+          typeaction: type
+        }
+      }).then(res => {
+        // alert(JSON.stringify(res));
+      }).catch(err => {
+        // alert(err);
+      });
+    }
   }
   componentDidMount() {
     this.socket = io();
-    this.BackendControl = (type = "start") => {
-      this.socket.emit("control", {
-          type: type
-      });
-    }
   }
   render() {
     return (
       <li className="nav-item" href="#Stop" id="stop">
-        <a href="#" className="nav-link" id="StopButtom">
+        <a href="#" className="nav-link" id="StopButtom" onClick={() => this.BackendControl("stop")}>
           <svg width="1%" viewBox="0 0 16 16" className="bi bi-pause" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path d="M6 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5zm4 0a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
           </svg>
-          <span className="link-text" onClick={() => this.BackendControl("stop")}>Stop</span>
+          <span className="link-text">Stop</span>
         </a>
       </li>
     )
@@ -95,7 +112,7 @@ class PlayerShotcurt extends Component {
   render() {
     return (
       <li className="nav-item">
-        <a className="nav-link" href="players">
+        <a className="nav-link" href={"/v1/player"}>
           <svg version="1.1" fill="currentColor" x="0px" y="0px" viewBox="0 0 384.971 384.971">
             <path d="M180.455,360.91H24.061V24.061h156.394c6.641,0,12.03-5.39,12.03-12.03s-5.39-12.03-12.03-12.03H12.03 C5.39,0.001,0,5.39,0,12.031V372.94c0,6.641,5.39,12.03,12.03,12.03h168.424c6.641,0,12.03-5.39,12.03-12.03 C192.485,366.299,187.095,00.91,180.455,360.10z"/>
           </svg>
@@ -112,13 +129,17 @@ class Backup extends Component {
     super(props);
     this.state = {}
   }
-  componentDidMount() {
-    this.socket = io();
-  }
   render() {
     return (
       <li className="nav-item">
-        <a className="nav-link">
+        <a className="nav-link" onClick={() => fetch(`/BdsAPI/bds/backup?token=${Env.API_TOKEN}`).then(res => res.blob()).then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Bds Maneger Backup ${new Date().toString()}.zip`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+          })}>
           <svg version="1.1" fill="currentColor" x="0px" y="0px" viewBox="0 0 384.971 384.971">
             <path d="M180.455,360.91H24.061V24.061h156.394c6.641,0,12.03-5.39,12.03-12.03s-5.39-12.03-12.03-12.03H12.03 C5.39,0.001,0,5.39,0,12.031V372.94c0,6.641,5.39,12.03,12.03,12.03h168.424c6.641,0,12.03-5.39,12.03-12.03 C192.485,366.299,187.095,00.91,180.455,360.10z"/>
           </svg>
@@ -174,6 +195,12 @@ class Navbar extends Component {
 
               {/* Stop Buttom */}
               <StopButtom />
+
+              {/* Players */}
+              <PlayerShotcurt />
+
+              {/* Backup */}
+              <Backup />
 
               {/* Settings Buttom */}
               <SettingsButtom />
