@@ -174,11 +174,50 @@ class Logout extends Component {
   }
 }
 
+// Bds Maneger Info
+class Info extends Component {
+  constructor (props) {
+    super(props);
+    this.state = {}
+  }
+  componentDidMount() {}
+  render() {
+    return (
+      <>
+        <li className="nav-item">
+          <a className="nav-link" href="/info">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M 12 2 C 6.4889971 2 2 6.4889971 2 12 C 2 17.511003 6.4889971 22 12 22 C 17.511003 22 22 17.511003 22 12 C 22 6.4889971 17.511003 2 12 2 z M 12 4 C 16.430123 4 20 7.5698774 20 12 C 20 16.430123 16.430123 20 12 20 C 7.5698774 20 4 16.430123 4 12 C 4 7.5698774 7.5698774 4 12 4 z M 11 7 L 11 9 L 13 9 L 13 7 L 11 7 z M 11 11 L 11 17 L 13 17 L 13 11 L 11 11 z"/>
+            </svg>
+            <span className="link-text">Bds Maneger Info</span>
+          </a>
+        </li>
+      </>
+    )
+  }
+}
+
 // Nav Bar
 class Navbar extends Component {
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {
+      IsRunning: false,
+    }
+  }
+  componentDidMount(){
+    fetch("http://localhost:3000/BdsAPI/v2/info/server").then(res => res.json()).then(Server_Info => {
+      this.setState({
+        IsRunning: Server_Info.Process.Uptime > 0 && Server_Info.Process.PID > 0,
+      });
+    }).catch(err => {});
+    setInterval(() => {
+      fetch("http://localhost:3000/BdsAPI/v2/info/server").then(res => res.json()).then(Server_Info => {
+        this.setState({
+          IsRunning: Server_Info.Process.Uptime > 0,
+        });
+      }).catch(err => {});
+    }, 1000);
   }
   render() {
     return (
@@ -190,11 +229,7 @@ class Navbar extends Component {
                   </a>
               </li>
               <li className="nav-link"></li>
-              {/* Start Buttom */}
-              <StartButtom />
-
-              {/* Stop Buttom */}
-              <StopButtom />
+              {this.state.IsRunning ? <StopButtom /> : <StartButtom />}
 
               {/* Players */}
               <PlayerShotcurt />
@@ -204,6 +239,9 @@ class Navbar extends Component {
 
               {/* Settings Buttom */}
               <SettingsButtom />
+
+              {/* Bds Info */}
+              <Info />
           </ul>
       </nav>
     )

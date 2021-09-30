@@ -22,29 +22,13 @@ io.on("connect", socket => {
   let CurrentLog = fs.readFileSync(path.join(Bds_Backend.getBdsConfig().paths.log, "latest.log"), "utf8");
   if (fs.existsSync(path.join(Bds_Backend.getBdsConfig().paths.log, "latest.log")) && Bds_Backend.detect()) {
     socket.emit("Log", {
-      log: CurrentLog.split(/\n|\r/gi),
+      log: CurrentLog.replace(/\r\n/gi, "\n").split(/\n/gi),
     });
   }
 
   // Send Players JSON
   let Players = JSON.parse(fs.readFileSync(Bds_Backend.getBdsConfig().paths.player, "utf8"));
   socket.emit("PlayerList", Players[Bds_Backend.BdsSettigs.GetPlatform()]);
-
-  // Send Server Config
-  socket.emit("LoadConfig", Bds_Backend.get_config());
-  
-  // Save Server Config
-  socket.on("SaveConfig", (data, callback = () => {}) => {
-    try {
-      console.log(data);
-      Bds_Backend.set_config(data);
-      callback(undefined);
-      socket.emit("LoadConfig", Bds_Backend.get_config());
-    } catch (error) {
-      console.error(error);
-      callback(error);
-    }
-  });
 
   // Command
   socket.on("Command", (data = "", callback = () => {}) => {
@@ -58,7 +42,6 @@ io.on("connect", socket => {
 
 // Backend Control
 app.post("/BdsBackend/control", (req, res) => {
-  console.log(req.headers);
   const { typeaction } = req.headers;
   if (typeaction === "start") {
     StartServer();
@@ -76,7 +59,7 @@ function StartServer() {
     const Server = Bds_Backend.start();
     Server.log(data => {
       process.stdout.write(data);
-      io.emit("Log", { log: data.split(/\n|\r/gi) })
+      io.emit("Log", { log: data.replace(/\r\n/gi, "\n").split(/\n/gi) })
     });
     Server.on("all", data => io.emit("OnServer", { data }));
     global.globalRunID = Server.uuid;
@@ -95,7 +78,7 @@ function StopServer() {
 }
 
 // Load Root API Token
-const rootToken = [...JSON.parse(fs.readFileSync(path.join(Bds_Backend.BdsSettigs.bds_dir, "bds_tokens.json"), "utf8"))];
+const rootToken = JSON.parse(fs.readFileSync(path.join(Bds_Backend.BdsSettigs.bds_dir, "bds_tokens.json"), "utf8"));
 if (rootToken.length > 0) process.env.API_TOKEN = rootToken[0].token;
 else {
   process.env.API_TOKEN = Bds_Backend.token_register();
@@ -115,7 +98,17 @@ fs.readFile("./.env.json", "utf8", (err, data) => {
 
 // Prepare Next App
 nextApp.prepare().then(() => {
-  app.use("/BdsAPI", require("@the-bds-maneger/core/src/api/api").BdsRoutes);
+  app.use("/BdsAPI", Bds_Backend.api.BdsRoutes);
+  app.get("/BdsAPI/PlatformValid", async (req, res) => {
+    res.send(await (await (require("@the-bds-maneger/core/lib/BdsSystemInfo"))()));
+  });
+  app.post("/BdsAPI/Updates", (req, res) => {
+    const { platform } = req.body;
+    if (platform) {
+      Bds_Backend.BdsSettigs.UpdatePlatform(platform);
+      res.send("OK");
+    } else res.send("ERROR");
+  });
   app.get("*", (req, res) => {
     return nextHandler(req, res);
   });
