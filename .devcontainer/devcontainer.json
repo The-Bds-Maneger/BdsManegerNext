@@ -1,0 +1,43 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.195.0/containers/javascript-node
+{
+	"name": "BdsManegerNext",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"settings": {},
+	"extensions": [
+		"dbaeumer.vscode-eslint",
+		"coenraads.bracket-pair-colorizer",
+		"aaron-bond.better-comments",
+		"formulahendry.auto-rename-tag",
+		"mikestead.dotenv",
+		"rpinski.shebang-snippets",
+		"vscode-icons-team.vscode-icons",
+		"oouo-diogo-perdigao.docthis",
+		"me-dutour-mathieu.vscode-github-actions",
+		"formulahendry.github-actions",
+		"cschleiden.vscode-github-actions",
+		"github.copilot",
+		"github.vscode-pull-request-github",
+		"michelemelluso.gitignore",
+		"eamodio.gitlens",
+		"benshabatnoam.google-translate-ext",
+		"oderwat.indent-rainbow",
+		"tgreen7.vs-code-node-require",
+		"christian-kohler.path-intellisense",
+		"visualstudioexptteam.vscodeintellicode",
+		"redhat.vscode-yaml"
+	],
+	"forwardPorts": [
+		3000
+	],
+	"portsAttributes": {
+		"3000": {
+			"label": "Hello Remote World",
+			"onAutoForward": "notify"
+		}
+	},
+	"postCreateCommand": "npm install",
+	"remoteUser": "node"
+}
