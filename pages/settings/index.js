@@ -2,6 +2,42 @@ import { Component } from "react";
 import io from "socket.io-client";
 import Envs from "../../.env.json";
 
+// Get Platform Object Versions
+async function GetVersions(SelectPlatform = "") {
+  const CurrentPlatform = SelectPlatform || GetPlatform();
+  let ResToRetuen = {
+    latest: "",
+    versions: {
+      "123.123.123": {
+        data: `${new Date()}`,
+        url: "",
+        linux: {
+          aarch64: "",
+          armv7: "",
+          x64: "",
+          i386: ""
+        },
+        win32: {
+          aarch64: "",
+          x64: "",
+          i386: ""
+        },
+        darwin: {
+          aarch64: "",
+          x64: ""
+        },
+        android: {
+          aarch64: "",
+          x64: ""
+        }
+      }
+    }
+  }
+  const _a = await fetch(`https://raw.githubusercontent.com/The-Bds-Maneger/ServerVersions/main/${CurrentPlatform}/server.json`);
+  ResToRetuen = _a.json();
+  return ResToRetuen;
+}
+
 class ServerSettings extends Component {
   constructor(props) {
     super(props);
@@ -20,6 +56,7 @@ class ServerSettings extends Component {
       loadConfig: false,
       AvaiblesPlatforms: [],
       Platform: null,
+      Versions: []
     }
   }
   componentDidMount() {
@@ -81,6 +118,12 @@ class ServerSettings extends Component {
         platform: this.state.Platform,
       })
     }).catch(err => {});
+
+    GetVersions(this.state.Platform).then(Res => {
+      this.setState({
+        Versions: Object.keys(Res.versions)
+      });
+    }).catch(err => {});
   }
   render() {
     return (
@@ -89,6 +132,12 @@ class ServerSettings extends Component {
         <ul>
           <span>Select Aviable Bds Maneger Platform: {" "}
             <select onChange={(e) => {this.setState({Platform: e.target.value})}} value={this.state.Platform}>{this.state.AvaiblesPlatforms.length || 0  > 0 ? this.state.AvaiblesPlatforms.map((platform, key) => (<option key={key} value={platform}>{platform}</option>)) : <option>Loading...</option>}</select>
+          </span>
+          <br />
+          <span>Select Version to Download: {" "}
+            <select>
+              {this.state.Versions.length > 0 ? this.state.Versions.map((version, key) => (<option key={key} value={version}>v{version}</option>)) : <option>Loading...</option>}
+            </select>
           </span>
         </ul>
         <h1>Server Settings</h1>

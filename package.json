@@ -9,7 +9,7 @@
     "dev": "nodemon index.js -e index.js -L -w index.js"
   },
   "dependencies": {
-    "@the-bds-maneger/core": "github:The-Bds-Maneger/Bds-Maneger-Core#v1.14.0",
+    "@the-bds-maneger/core": "^1.14.1",
     "express": "^4.17.1",
     "next": "11.1.2",
     "react": "17.0.2",
